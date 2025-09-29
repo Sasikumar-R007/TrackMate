@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TrackMate – Verify</title>
+  <style>
+    body { font-family: Arial; background: #f4f4f4; margin: 0; text-align: center; }
+    header { background: #28A745; color: white; padding: 15px; font-size: 1.5em; }
+    .container { max-width: 400px; margin: 20px auto; background: white; padding: 20px;
+                 border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+    button { width: 100%; padding: 10px; background: #28A745; color: white;
+             border: none; cursor: pointer; border-radius: 5px; }
+    button:hover { background: #1e7e34; }
+    #status { margin-top: 15px; padding: 10px; background: #eee; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <header>TrackMate – Verify</header>
+  <div class="container">
+    <button onclick="verify()">Start Verification</button>
+    <div id="status">Status: Waiting...</div>
+    <a href="index.html">Back to Enroll</a> | <a href="students.html">View Students</a>
+  </div>
+
+  <script>
+    const ESP_IP = "http://192.168.1.100"; // 🔥 Replace with your ESP IP
+    const statusDiv = document.getElementById('status');
+
+    function verify() {
+      statusDiv.innerText = "Status: Verifying... Place your finger";
+      fetch(`${ESP_IP}/verify`)
+        .then(r => r.text())
+        .then(d => statusDiv.innerText = "Status: " + d)
+        .catch(() => statusDiv.innerText = "Status: Failed to connect to ESP.");
+    }
+  </script>
+</body>
+</html>
