@@ -12,6 +12,8 @@ CORS(app)
 
 DATABASE = 'trackmate.db'
 
+HARDWARE_API_KEY = os.environ.get("HARDWARE_API_KEY")
+
 # Bus routes mapping
 BUS_ROUTES = {
     'Bus-1': 'Route A - Main Street → School',
@@ -305,3 +307,98 @@ def update_student():
         return jsonify({'success': False, 'message': str(e)}), 400
     finally:
         conn.close()
+
+@app.route('/api/esp32/scan', methods=['POST'])
+def esp32_fingerprint_scan():
+    if not HARDWARE_API_KEY:
+        return jsonify({'success': False, 'message': 'Hardware integration not configured. Set HARDWARE_API_KEY environment variable.'}), 503
+    
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'success': False, 'message': 'Invalid JSON payload'}), 400
+    except Exception:
+        return jsonify({'success': False, 'message': 'Malformed JSON request'}), 400
+    
+    api_key = request.headers.get('X-API-Key')
+    
+    if not api_key or api_key != HARDWARE_API_KEY:
+        return jsonify({'success': False, 'message': 'Invalid or missing API key'}), 401
+    
+    fingerprint_id = data.get('fingerprint_id')
+    bus_number = data.get('bus_number')
+    scan_type = data.get('scan_type')
+    
+    if not all([fingerprint_id, bus_number, scan_type]):
+        return jsonify({'success': False, 'message': 'Missing required fields'}), 400
+    
+    conn = get_db()
+    c = conn.cursor()
+    
+    try:
+        c.execute('SELECT * FROM students WHERE fingerprint_id = ? AND bus_number = ?', 
+                 (fingerprint_id, bus_number))
+        student = c.fetchone()
+        
+        if not student:
+            conn.close()
+            return jsonify({'success': False, 'message': 'Student not found'}), 404
+        
+        student_id = student['id']
+        current_date = datetime.now().strftime('%Y-%m-%d')
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        if scan_type == 'entry':
+            c.execute('''SELECT * FROM attendance 
+                        WHERE student_id = ? AND date = ? AND exit_time IS NULL''',
+                     (student_id, current_date))
+            existing = c.fetchone()
+            
+            if existing:
+                conn.close()
+                return jsonify({'success': False, 'message': 'Already marked entry'}), 400
+            
+            c.execute('''INSERT INTO attendance (student_id, entry_time, date, bus_number)
+                        VALUES (?, ?, ?, ?)''',
+                     (student_id, current_time, current_date, bus_number))
+            conn.commit()
+            
+            return jsonify({
+                'success': True, 
+                'message': 'Entry recorded',
+                'student_name': student['student_name'],
+                'time': current_time
+            })
+        
+        elif scan_type == 'exit':
+            c.execute('''SELECT * FROM attendance 
+                        WHERE student_id = ? AND date = ? AND exit_time IS NULL
+                        ORDER BY id DESC LIMIT 1''',
+                     (student_id, current_date))
+            attendance = c.fetchone()
+            
+            if not attendance:
+                conn.close()
+                return jsonify({'success': False, 'message': 'No entry found for today'}), 400
+            
+            c.execute('''UPDATE attendance SET exit_time = ? WHERE id = ?''',
+                     (current_time, attendance['id']))
+            conn.commit()
+            
+            return jsonify({
+                'success': True,
+                'message': 'Exit recorded',
+                'student_name': student['student_name'],
+                'time': current_time
+            })
+        
+        else:
+            conn.close()
+            return jsonify({'success': False, 'message': 'Invalid scan_type'}), 400
+            
+    except Exception as e:
+        conn.close()
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        if conn:
+            conn.close()
