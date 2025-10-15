@@ -7,7 +7,7 @@ from datetime import datetime
 import secrets
 
 app = Flask(__name__, static_folder='static', static_url_path='')
-app.secret_key = secrets.token_hex(32)
+app.secret_key = os.environ.get("SESSION_SECRET") or secrets.token_hex(32)
 CORS(app)
 
 DATABASE = 'trackmate.db'
@@ -305,6 +305,3 @@ def update_student():
         return jsonify({'success': False, 'message': str(e)}), 400
     finally:
         conn.close()
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)

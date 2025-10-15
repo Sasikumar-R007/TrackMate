@@ -1,9 +1,10 @@
-modules = ["cpp-clang14", "web", "python-3.11"]
+modules = ["nodejs-20", "web", "python-3.11", "cpp-clang14"]
 [agent]
 expertMode = true
 
 [nix]
 channel = "stable-25_05"
+packages = ["openssl", "postgresql"]
 
 [workflows]
 runButton = "Project"
@@ -15,18 +16,15 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Frontend Server"
+args = "Start application"
 
 [[workflows.workflow]]
-name = "Frontend Server"
+name = "Start application"
 author = "agent"
-
-[workflows.workflow.metadata]
-outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python app.py"
+args = "gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app"
 waitForPort = 5000
 
 [[ports]]
@@ -34,9 +32,13 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
+localPort = 44285
+externalPort = 3001
+
+[[ports]]
 localPort = 46021
 externalPort = 3000
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["python3", "server.py"]
+run = ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
