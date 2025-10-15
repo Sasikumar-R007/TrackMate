@@ -4,6 +4,14 @@
 TrackMate is an interactive, colorful fingerprint-based attendance tracking system designed specifically for school van management. The system features separate dashboards for teachers and parents with role-based access control.
 
 ## Recent Changes
+- **October 15, 2025 - ESP32 Hardware Integration**: Added fingerprint sensor hardware integration
+  - **New API Endpoint**: `/api/esp32/scan` for receiving fingerprint scans from ESP32 devices
+  - **Secure Authentication**: Hardware devices authenticate via API key (environment variable)
+  - **Automatic Attendance**: Students scan fingerprints on bus entry/exit for automatic tracking
+  - **Real-time Updates**: Attendance records updated instantly when students scan
+  - **Complete Documentation**: ESP32 Arduino code and setup guide included
+  - **Security Features**: Encrypted API communication, no hard-coded credentials
+
 - **October 15, 2025 - Latest Update**: Enhanced login system and dashboard improvements
   - **Login Credentials Changed**:
     - Teachers login with their name and password (not mobile)
@@ -34,11 +42,13 @@ TrackMate is an interactive, colorful fingerprint-based attendance tracking syst
 - `parent-dashboard.js` - Parent dashboard with call buttons and edit features
 
 ### Backend Files
-- `app.py` - Flask application with API endpoints for authentication and data management
+- `app.py` - Flask application with API endpoints for authentication, data management, and ESP32 integration
 - `trackmate.db` - SQLite database (auto-created)
 
-### Legacy Files
-- `trackmate.ino` - Arduino code for ESP8266 with fingerprint sensor
+### Hardware Integration Files
+- `ESP32_CODE.ino` - Arduino code for ESP32 with fingerprint sensor and WiFi
+- `HARDWARE_SETUP.md` - Complete hardware setup and integration guide
+- `trackmate.ino` - Legacy Arduino code for ESP8266 (deprecated)
 
 ## Features
 
@@ -121,6 +131,8 @@ TrackMate is an interactive, colorful fingerprint-based attendance tracking syst
 - **Server**: Runs on port 5000
 
 ## API Endpoints
+
+### Web Application Endpoints
 - `POST /api/register` - Register new user
 - `POST /api/login` - User login (name for teachers, roll number for parents)
 - `POST /api/logout` - User logout
@@ -132,6 +144,12 @@ TrackMate is an interactive, colorful fingerprint-based attendance tracking syst
 - `GET /api/students` - Get students list
 - `GET /api/attendance` - Get attendance records
 - `POST /api/attendance` - Mark attendance
+
+### Hardware Integration Endpoint
+- `POST /api/esp32/scan` - Receive fingerprint scans from ESP32 devices
+  - Requires: `X-API-Key` header for authentication
+  - Payload: `fingerprint_id`, `bus_number`, `scan_type` (entry/exit)
+  - Returns: Success status, student name, and timestamp
 
 ## User Preferences
 - Target audience: School students and parents
