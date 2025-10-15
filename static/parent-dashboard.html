@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Dashboard - TrackMate</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">🚌 TrackMate</div>
+        <div class="nav-user">
+            <span id="userName">Parent</span>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="menu-items">
+                <div class="menu-item active" onclick="showSection('bus')">
+                    <span class="icon">🚌</span>
+                    <span>Bus Details</span>
+                </div>
+                <div class="menu-item" onclick="showSection('attendance')">
+                    <span class="icon">📅</span>
+                    <span>Attendance</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Bus Details Section -->
+            <section id="busSection" class="section active">
+                <h2>🚌 Bus Information</h2>
+                
+                <div class="card">
+                    <h3>Bus Details</h3>
+                    <div class="bus-info" id="busInfo">
+                        <div class="info-box purple">
+                            <h4>Bus Number</h4>
+                            <p id="busNumber">-</p>
+                        </div>
+                        <div class="info-box blue">
+                            <h4>Bus Route</h4>
+                            <p id="busRoute">-</p>
+                        </div>
+                        <div class="info-box orange">
+                            <h4>Driver Name</h4>
+                            <p id="driverName">-</p>
+                        </div>
+                        <div class="info-box">
+                            <h4>Driver Mobile</h4>
+                            <p id="driverMobile">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Teacher Information</h3>
+                    <div class="bus-info">
+                        <div class="info-box purple">
+                            <h4>Teacher Name</h4>
+                            <p id="teacherName">-</p>
+                        </div>
+                        <div class="info-box blue">
+                            <h4>Teacher Mobile</h4>
+                            <p id="teacherMobile">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Student Information</h3>
+                    <div id="studentInfo" class="student-info">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attendance Section -->
+            <section id="attendanceSection" class="section">
+                <h2>📅 Attendance Records</h2>
+                
+                <div class="card">
+                    <h3>Today's Attendance</h3>
+                    <div id="todayRecord" class="attendance-detail">
+                        <p class="empty-state">No attendance record for today</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Attendance History (Last 7 Days)</h3>
+                    <div class="form-group">
+                        <label>Select Date</label>
+                        <input type="date" id="dateFilter" onchange="loadAttendanceByDate()">
+                    </div>
+                    <div id="attendanceHistory" class="attendance-history">
+                        <p class="empty-state">Select a date to view attendance</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="parent-dashboard.js"></script>
+</body>
+</html>
