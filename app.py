@@ -149,14 +149,26 @@ def register():
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
-    mobile = data.get('mobile')
+    user_type = data.get('user_type')
     password = data.get('password')
     
     conn = get_db()
     c = conn.cursor()
     
-    c.execute('SELECT * FROM users WHERE mobile = ?', (mobile,))
-    user = c.fetchone()
+    if user_type == 'teacher':
+        # Teachers login with name
+        name = data.get('name')
+        c.execute('SELECT * FROM users WHERE name = ? AND user_type = ?', (name, user_type))
+        user = c.fetchone()
+    else:
+        # Parents login with student roll number
+        roll_number = data.get('roll_number')
+        # Find parent through student roll number
+        c.execute('''SELECT u.* FROM users u 
+                     JOIN students s ON u.id = s.parent_id 
+                     WHERE s.roll_number = ? AND u.user_type = ?''', (roll_number, user_type))
+        user = c.fetchone()
+    
     conn.close()
     
     if user and check_password_hash(user['password'], password):

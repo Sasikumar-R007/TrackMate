@@ -75,19 +75,30 @@ function updateBusRoute(busNumber, routeFieldId) {
 
 // Login function
 async function login(userType) {
-    const mobile = document.getElementById(`${userType}Mobile`).value;
     const password = document.getElementById(`${userType}Password`).value;
+    let loginData = { user_type: userType, password };
     
-    if (!mobile || !password) {
-        showNotification('Please fill all fields!', 'error');
-        return;
+    if (userType === 'teacher') {
+        const name = document.getElementById('teacherName').value;
+        if (!name || !password) {
+            showNotification('Please fill all fields!', 'error');
+            return;
+        }
+        loginData.name = name;
+    } else {
+        const rollNumber = document.getElementById('parentRollNumber').value;
+        if (!rollNumber || !password) {
+            showNotification('Please fill all fields!', 'error');
+            return;
+        }
+        loginData.roll_number = rollNumber;
     }
     
     try {
         const response = await fetch('/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mobile, password })
+            body: JSON.stringify(loginData)
         });
         
         const data = await response.json();
