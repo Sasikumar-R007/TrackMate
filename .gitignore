@@ -35,3 +35,24 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Replit specific
+.replit
+replit.nix
+.config/
+.upm/
+.cache/
+.local/
+.pythonlibs/
+
+# Environment variables
+.env
+.env.local
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
