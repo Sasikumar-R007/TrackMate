@@ -4,7 +4,17 @@
 TrackMate is an interactive, colorful fingerprint-based attendance tracking system designed specifically for school van management. The system features separate dashboards for teachers and parents with role-based access control.
 
 ## Recent Changes
-- **October 15, 2025**: Complete redesign with interactive UI, login system, and role-based dashboards
+- **October 15, 2025 - Latest Update**: Enhanced login system and dashboard improvements
+  - **Login Credentials Changed**:
+    - Teachers login with their name and password (not mobile)
+    - Parents login with student roll number and password (not mobile)
+  - **Teacher Dashboard**: Added "Teacher Details" section for profile management
+  - **Parent Dashboard Enhancements**:
+    - Phone call button with icon for direct teacher contact
+    - Edit student details feature (name and class)
+    - Improved attendance history with compact date selector
+  
+- **October 15, 2025 - Initial Version**: Complete redesign with interactive UI
   - Added colorful, animated login page with floating shapes and bus animation
   - Implemented Flask backend with SQLite database
   - Created separate teacher and parent dashboards
@@ -15,38 +25,31 @@ TrackMate is an interactive, colorful fingerprint-based attendance tracking syst
 
 ### Frontend Files (static/)
 - `login.html` - Animated login/registration page with teacher and parent options
-- `teacher-dashboard.html` - Teacher dashboard with enroll, verify, and student list
-- `parent-dashboard.html` - Parent dashboard with bus details and attendance tracking
+- `teacher-dashboard.html` - Teacher dashboard with enroll, verify, student list, and teacher details
+- `parent-dashboard.html` - Parent dashboard with bus details, attendance tracking, and edit features
 - `styles.css` - Colorful, animated styles for login page
-- `dashboard.css` - Dashboard styles with responsive design
-- `login.js` - Login/registration logic with form validation
-- `teacher-dashboard.js` - Teacher dashboard functionality
-- `parent-dashboard.js` - Parent dashboard functionality
+- `dashboard.css` - Dashboard styles with responsive design and new components
+- `login.js` - Login/registration logic with updated credential system
+- `teacher-dashboard.js` - Teacher dashboard functionality with profile updates
+- `parent-dashboard.js` - Parent dashboard with call buttons and edit features
 
 ### Backend Files
 - `app.py` - Flask application with API endpoints for authentication and data management
 - `trackmate.db` - SQLite database (auto-created)
 
 ### Legacy Files
-- `index.html`, `verify.html`, `students.html` - Original static pages (kept for reference)
 - `trackmate.ino` - Arduino code for ESP8266 with fingerprint sensor
-- `server.py` - Legacy simple HTTP server (replaced by app.py)
 
 ## Features
 
 ### Authentication System
-- **Teacher Login/Registration**: 
-  - Name, mobile, password
-  - Class assignment (dropdown)
-  - Student count
-  - Bus number (dropdown) - auto-fills bus route
-  - Bus route (auto-populated)
+- **Teacher Login**: 
+  - Login with teacher name and password
+  - Registration includes: name, mobile, password, class, student count, bus number, bus route
 
-- **Parent Login/Registration**:
-  - Parent name, mobile, password
-  - Student name, roll number
-  - Class selection
-  - Bus number and route (interconnected)
+- **Parent Login**:
+  - Login with student roll number and password
+  - Registration includes: parent name, mobile, password, student name, roll number, class, bus number, bus route
 
 ### Teacher Dashboard
 1. **Enroll Student Section**
@@ -64,16 +67,26 @@ TrackMate is an interactive, colorful fingerprint-based attendance tracking syst
    - Search functionality
    - Colorful student cards with details
 
+4. **Teacher Details Section** (NEW)
+   - View and update teacher name
+   - Update mobile number
+   - View assigned class, bus number, and route
+
 ### Parent Dashboard
 1. **Bus Details Section**
    - Bus number and route information
    - Driver name and contact
-   - Teacher name and contact
+   - Teacher information with phone call button
    - Student information card
 
-2. **Attendance Section**
+2. **Student Information** (ENHANCED)
+   - View student details
+   - Edit student name and class
+   - Save and cancel options
+
+3. **Attendance Section** (IMPROVED)
    - Today's attendance with entry/exit times
-   - Historical attendance lookup by date
+   - Compact date selector for historical lookup
    - Color-coded attendance status (green for present, red for absent)
 
 ## Database Schema
@@ -94,6 +107,9 @@ TrackMate is an interactive, colorful fingerprint-based attendance tracking syst
 - Animated gradient backgrounds with floating shapes
 - Bus animation with rotating wheels
 - Colorful gradient buttons and cards
+- Phone call buttons with icons
+- Edit forms with save/cancel options
+- Compact date selector for better UX
 - Responsive design for mobile and desktop
 - Smooth transitions and hover effects
 - Emoji icons for visual appeal
@@ -104,10 +120,23 @@ TrackMate is an interactive, colorful fingerprint-based attendance tracking syst
 - **Frontend**: Vanilla JavaScript with modern CSS animations
 - **Server**: Runs on port 5000
 
+## API Endpoints
+- `POST /api/register` - Register new user
+- `POST /api/login` - User login (name for teachers, roll number for parents)
+- `POST /api/logout` - User logout
+- `GET /api/user-info` - Get current user information
+- `POST /api/update-teacher` - Update teacher details
+- `POST /api/update-student` - Update student details
+- `GET /api/bus-routes` - Get all bus routes
+- `GET /api/bus-details/<bus_number>` - Get specific bus details
+- `GET /api/students` - Get students list
+- `GET /api/attendance` - Get attendance records
+- `POST /api/attendance` - Mark attendance
+
 ## User Preferences
 - Target audience: School students and parents
 - Design: Colorful, animated, child-friendly
-- Features: Role-based access, attendance tracking, bus information management
+- Features: Role-based access, attendance tracking, bus information management, direct contact options
 
 ## Configuration
 - Server host: 0.0.0.0 (accessible from network)
