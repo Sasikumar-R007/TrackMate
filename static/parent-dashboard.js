@@ -72,8 +72,24 @@ function displayBusDetails() {
         document.getElementById('busRoute').textContent = busDetails.bus_route || '-';
         document.getElementById('driverName').textContent = busDetails.driver_name || '-';
         document.getElementById('driverMobile').textContent = busDetails.driver_mobile || '-';
-        document.getElementById('teacherName').textContent = busDetails.teacher_name || 'Not assigned';
-        document.getElementById('teacherMobile').textContent = busDetails.teacher_mobile || '-';
+        
+        // Display teacher info with call button
+        const teacherContainer = document.getElementById('teacherInfoContainer');
+        if (busDetails.teacher_name && busDetails.teacher_mobile) {
+            teacherContainer.innerHTML = `
+                <div class="teacher-contact-box">
+                    <div class="teacher-info">
+                        <h4>👨‍🏫 ${busDetails.teacher_name}</h4>
+                        <p class="teacher-mobile">📱 ${busDetails.teacher_mobile}</p>
+                    </div>
+                    <a href="tel:${busDetails.teacher_mobile}" class="call-btn" title="Call Teacher">
+                        📞
+                    </a>
+                </div>
+            `;
+        } else {
+            teacherContainer.innerHTML = '<p class="empty-state">No teacher assigned</p>';
+        }
     }
 }
 
@@ -98,7 +114,7 @@ function displayStudentInfo() {
     const container = document.getElementById('studentInfo');
     if (studentInfo) {
         container.innerHTML = `
-            <div class="student-card" style="max-width: 400px;">
+            <div class="student-card" style="max-width: 400px;" id="studentCard">
                 <h4>👦 ${studentInfo.student_name}</h4>
                 <p>🎓 Roll Number: ${studentInfo.roll_number}</p>
                 <p>📚 Class: ${studentInfo.class}</p>
@@ -107,6 +123,78 @@ function displayStudentInfo() {
             </div>
         `;
     }
+}
+
+// Edit student details
+function editStudentDetails() {
+    if (!studentInfo) return;
+    
+    const container = document.getElementById('studentInfo');
+    container.innerHTML = `
+        <div class="edit-form">
+            <div class="form-group">
+                <label>Student Name</label>
+                <input type="text" id="editStudentName" value="${studentInfo.student_name}">
+            </div>
+            <div class="form-group">
+                <label>Class</label>
+                <select id="editStudentClass">
+                    <option value="Nursery" ${studentInfo.class === 'Nursery' ? 'selected' : ''}>Nursery</option>
+                    <option value="LKG" ${studentInfo.class === 'LKG' ? 'selected' : ''}>LKG</option>
+                    <option value="UKG" ${studentInfo.class === 'UKG' ? 'selected' : ''}>UKG</option>
+                    <option value="Class 1" ${studentInfo.class === 'Class 1' ? 'selected' : ''}>Class 1</option>
+                    <option value="Class 2" ${studentInfo.class === 'Class 2' ? 'selected' : ''}>Class 2</option>
+                    <option value="Class 3" ${studentInfo.class === 'Class 3' ? 'selected' : ''}>Class 3</option>
+                    <option value="Class 4" ${studentInfo.class === 'Class 4' ? 'selected' : ''}>Class 4</option>
+                    <option value="Class 5" ${studentInfo.class === 'Class 5' ? 'selected' : ''}>Class 5</option>
+                </select>
+            </div>
+            <div class="edit-buttons">
+                <button class="btn-save" onclick="saveStudentDetails()">💾 Save</button>
+                <button class="btn-cancel" onclick="cancelEdit()">❌ Cancel</button>
+            </div>
+        </div>
+    `;
+}
+
+// Save student details
+async function saveStudentDetails() {
+    const name = document.getElementById('editStudentName').value;
+    const studentClass = document.getElementById('editStudentClass').value;
+    
+    if (!name || !studentClass) {
+        showNotification('Please fill all fields!', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/update-student', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                student_id: studentInfo.id,
+                student_name: name,
+                class: studentClass
+            })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            showNotification('Student details updated!', 'success');
+            studentInfo.student_name = name;
+            studentInfo.class = studentClass;
+            displayStudentInfo();
+        } else {
+            showNotification(data.message || 'Update failed!', 'error');
+        }
+    } catch (error) {
+        showNotification('Connection error!', 'error');
+    }
+}
+
+// Cancel edit
+function cancelEdit() {
+    displayStudentInfo();
 }
 
 // Set default date

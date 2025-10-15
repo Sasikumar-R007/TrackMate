@@ -58,15 +58,8 @@
 
                 <div class="card">
                     <h3>Teacher Information</h3>
-                    <div class="bus-info">
-                        <div class="info-box purple">
-                            <h4>Teacher Name</h4>
-                            <p id="teacherName">-</p>
-                        </div>
-                        <div class="info-box blue">
-                            <h4>Teacher Mobile</h4>
-                            <p id="teacherMobile">-</p>
-                        </div>
+                    <div id="teacherInfoContainer">
+                        <!-- Teacher details will be populated dynamically -->
                     </div>
                 </div>
 
@@ -75,6 +68,7 @@
                     <div id="studentInfo" class="student-info">
                         <!-- Will be populated dynamically -->
                     </div>
+                    <button class="btn-edit" onclick="editStudentDetails()">✏️ Edit Student Details</button>
                 </div>
             </section>
 
@@ -90,9 +84,9 @@
                 </div>
 
                 <div class="card">
-                    <h3>Attendance History (Last 7 Days)</h3>
-                    <div class="form-group">
-                        <label>Select Date</label>
+                    <h3>Attendance History</h3>
+                    <div class="compact-date-selector">
+                        <label>📅</label>
                         <input type="date" id="dateFilter" onchange="loadAttendanceByDate()">
                     </div>
                     <div id="attendanceHistory" class="attendance-history">
