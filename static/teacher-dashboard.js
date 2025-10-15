@@ -7,6 +7,7 @@ async function init() {
     await loadStudents();
     await loadAttendance();
     setCurrentTime();
+    populateTeacherDetails();
 }
 
 // Load user info
@@ -21,6 +22,48 @@ async function loadUserInfo() {
         }
     } catch (error) {
         window.location.href = '/';
+    }
+}
+
+// Populate teacher details
+function populateTeacherDetails() {
+    if (userInfo) {
+        document.getElementById('teacherNameField').value = userInfo.name || '';
+        document.getElementById('teacherMobileField').value = userInfo.mobile || '';
+        document.getElementById('teacherClassField').value = userInfo.class || '';
+        document.getElementById('teacherBusField').value = userInfo.bus_number || '';
+        document.getElementById('teacherRouteField').value = userInfo.bus_route || '';
+    }
+}
+
+// Update teacher details
+async function updateTeacherDetails() {
+    const name = document.getElementById('teacherNameField').value;
+    const mobile = document.getElementById('teacherMobileField').value;
+    
+    if (!name || !mobile) {
+        showNotification('Please fill all fields!', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/update-teacher', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, mobile })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            showNotification('Details updated successfully!', 'success');
+            userInfo.name = name;
+            userInfo.mobile = mobile;
+            document.getElementById('userName').textContent = name;
+        } else {
+            showNotification(data.message || 'Update failed!', 'error');
+        }
+    } catch (error) {
+        showNotification('Connection error!', 'error');
     }
 }
 

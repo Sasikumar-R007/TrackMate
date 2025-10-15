@@ -268,5 +268,43 @@ def get_user_info():
         return jsonify(dict(user))
     return jsonify({'error': 'User not found'}), 404
 
+@app.route('/api/update-teacher', methods=['POST'])
+def update_teacher():
+    if 'user_id' not in session or session.get('user_type') != 'teacher':
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    data = request.json
+    conn = get_db()
+    c = conn.cursor()
+    
+    try:
+        c.execute('''UPDATE users SET name = ?, mobile = ? WHERE id = ?''',
+                 (data.get('name'), data.get('mobile'), session['user_id']))
+        conn.commit()
+        return jsonify({'success': True, 'message': 'Details updated successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 400
+    finally:
+        conn.close()
+
+@app.route('/api/update-student', methods=['POST'])
+def update_student():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    data = request.json
+    conn = get_db()
+    c = conn.cursor()
+    
+    try:
+        c.execute('''UPDATE students SET student_name = ?, class = ? WHERE id = ?''',
+                 (data.get('student_name'), data.get('class'), data.get('student_id')))
+        conn.commit()
+        return jsonify({'success': True, 'message': 'Student details updated successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 400
+    finally:
+        conn.close()
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
