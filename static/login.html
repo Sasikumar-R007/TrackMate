@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrackMate - School Van Attendance</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+        <div class="shape shape3"></div>
+        <div class="shape shape4"></div>
+    </div>
+    
+    <div class="container">
+        <div class="welcome-section">
+            <div class="bus-animation">
+                <div class="bus">
+                    <div class="bus-body"></div>
+                    <div class="bus-window"></div>
+                    <div class="bus-window"></div>
+                    <div class="bus-wheel"></div>
+                    <div class="bus-wheel"></div>
+                </div>
+            </div>
+            <h1 class="title">🚌 TrackMate</h1>
+            <p class="subtitle">School Van Attendance System</p>
+        </div>
+
+        <div class="form-container" id="loginForm">
+            <h2>Welcome Back!</h2>
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('teacher')">👨‍🏫 Teacher</button>
+                <button class="tab-btn" onclick="showTab('parent')">👨‍👩‍👧 Parent</button>
+            </div>
+
+            <div class="login-section" id="teacherLogin">
+                <input type="text" id="teacherMobile" placeholder="📱 Mobile Number" required>
+                <input type="password" id="teacherPassword" placeholder="🔒 Password" required>
+                <button class="btn-primary" onclick="login('teacher')">Login</button>
+                <p class="switch-text">Don't have an account? <a href="#" onclick="toggleForm('register')">Register</a></p>
+            </div>
+
+            <div class="login-section hidden" id="parentLogin">
+                <input type="text" id="parentMobile" placeholder="📱 Mobile Number" required>
+                <input type="password" id="parentPassword" placeholder="🔒 Password" required>
+                <button class="btn-primary" onclick="login('parent')">Login</button>
+                <p class="switch-text">Don't have an account? <a href="#" onclick="toggleForm('register')">Register</a></p>
+            </div>
+        </div>
+
+        <div class="form-container hidden" id="registerForm">
+            <h2>Create Account</h2>
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showRegisterTab('teacher')">👨‍🏫 Teacher</button>
+                <button class="tab-btn" onclick="showRegisterTab('parent')">👨‍👩‍👧 Parent</button>
+            </div>
+
+            <div class="register-section" id="teacherRegister">
+                <input type="text" id="regTeacherName" placeholder="👤 Full Name" required>
+                <input type="text" id="regTeacherMobile" placeholder="📱 Mobile Number" required>
+                <input type="password" id="regTeacherPassword" placeholder="🔒 Password" required>
+                <select id="regTeacherClass" required>
+                    <option value="">Select Class</option>
+                    <option value="Nursery">Nursery</option>
+                    <option value="LKG">LKG</option>
+                    <option value="UKG">UKG</option>
+                    <option value="Class 1">Class 1</option>
+                    <option value="Class 2">Class 2</option>
+                    <option value="Class 3">Class 3</option>
+                    <option value="Class 4">Class 4</option>
+                    <option value="Class 5">Class 5</option>
+                </select>
+                <input type="number" id="regTeacherStudents" placeholder="👥 Number of Students" required>
+                <select id="regTeacherBus" onchange="updateBusRoute(this.value, 'regTeacherRoute')" required>
+                    <option value="">Select Bus Number</option>
+                    <option value="Bus-1">Bus-1</option>
+                    <option value="Bus-2">Bus-2</option>
+                    <option value="Bus-3">Bus-3</option>
+                    <option value="Bus-4">Bus-4</option>
+                </select>
+                <input type="text" id="regTeacherRoute" placeholder="🛣️ Bus Route" readonly>
+                <button class="btn-primary" onclick="register('teacher')">Register</button>
+                <p class="switch-text">Already have an account? <a href="#" onclick="toggleForm('login')">Login</a></p>
+            </div>
+
+            <div class="register-section hidden" id="parentRegister">
+                <input type="text" id="regParentName" placeholder="👤 Parent Name" required>
+                <input type="text" id="regParentMobile" placeholder="📱 Mobile Number" required>
+                <input type="password" id="regParentPassword" placeholder="🔒 Password" required>
+                <input type="text" id="regStudentName" placeholder="👦 Student Name" required>
+                <input type="text" id="regRollNumber" placeholder="🎓 Roll Number" required>
+                <select id="regParentClass" required>
+                    <option value="">Select Class</option>
+                    <option value="Nursery">Nursery</option>
+                    <option value="LKG">LKG</option>
+                    <option value="UKG">UKG</option>
+                    <option value="Class 1">Class 1</option>
+                    <option value="Class 2">Class 2</option>
+                    <option value="Class 3">Class 3</option>
+                    <option value="Class 4">Class 4</option>
+                    <option value="Class 5">Class 5</option>
+                </select>
+                <select id="regParentBus" onchange="updateBusRoute(this.value, 'regParentRoute')" required>
+                    <option value="">Select Bus Number</option>
+                    <option value="Bus-1">Bus-1</option>
+                    <option value="Bus-2">Bus-2</option>
+                    <option value="Bus-3">Bus-3</option>
+                    <option value="Bus-4">Bus-4</option>
+                </select>
+                <input type="text" id="regParentRoute" placeholder="🛣️ Bus Route" readonly>
+                <button class="btn-primary" onclick="register('parent')">Register</button>
+                <p class="switch-text">Already have an account? <a href="#" onclick="toggleForm('login')">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="login.js"></script>
+</body>
+</html>
